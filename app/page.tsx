@@ -167,38 +167,39 @@ export default function Portfolio() {
 
     {/* HEADER */}
     <div className="fixed top-0 left-0 w-full z-50 bg-black/50 backdrop-blur-md text-white">
-      <div className="max-w-auto mx-auto flex justify-start gap-8 py-4 px-6 text-sm font-medium">
+    <div className="flex justify-between items-center py-4 px-6 text-sm font-medium">
 
-        <button
-          onClick={() => document.getElementById("work")?.scrollIntoView({ behavior: "smooth" })}
-          className="hover:text-gray-300 transition"
-        >
+      {/* Left nav */}
+      <div className="flex gap-8">
+        <button onClick={() => document.getElementById("work")?.scrollIntoView({ behavior: "smooth" })}>
           Work
         </button>
 
-        <button
-          onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-          className="hover:text-gray-300 transition"
-        >
+        <button onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}>
           Projects
         </button>
 
-        <button
-          onClick={() => document.getElementById("photos")?.scrollIntoView({ behavior: "smooth" })}
-          className="hover:text-gray-300 transition"
-        >
+        <button onClick={() => document.getElementById("photos")?.scrollIntoView({ behavior: "smooth" })}>
           Photography
         </button>
 
-        <button
-          onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-          className="hover:text-gray-300 transition"
-        >
+        <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
           Contact
         </button>
-
       </div>
+
+      {/* Right GitHub button */}
+      <a
+        href="https://github.com/WhatzIt2Ya/Josefs_website.git"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-300 transition"
+      >
+        View GitHub Repo
+      </a>
+
     </div>
+  </div>
 
     {/* HERO SECTION */}
     <div className="relative h-[100vh] w-full overflow-hidden">
@@ -464,6 +465,21 @@ export default function Portfolio() {
       <p>📞 {process.env.NEXT_PUBLIC_PHONE}</p>
       </div>
     </div>
+    <footer className="text-center text-gray-400 text-sm py-6">
+    <p>© {new Date().getFullYear()} Josef Ranc. All rights reserved.</p>
+
+    <p className="mt-2">
+      Built with Next.js
+      <a
+        href="https://github.com/WhatzIt2Ya/Josefs_website"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-400 hover:text-blue-300 underline ml-1"
+      >
+        View Source Code
+      </a>
+    </p>
+  </footer>
   </div>
   </div>
   );
