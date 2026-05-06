@@ -83,7 +83,7 @@ if (!systemPrompt) {
     return Response.json({ reply });
 
   } catch (err) {
-    console.error("🔥 API Error:", err);
+    console.error("API Error:", err);
     return new Response("Internal server error", { status: 500 });
   }
 }

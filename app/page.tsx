@@ -8,50 +8,48 @@ export default function Portfolio() {
   const [reply, setReply] = useState("");
   const [visibleReply, setVisibleReply] = useState("");
   const [loading, setLoading] = useState(false);
-  const [boxHeight, setBoxHeight] = useState(0);
-  const measureRef = useRef<HTMLDivElement>(null);
-  const chatboxRef = useRef<HTMLDivElement>(null);
-  const [boxWidth, setBoxWidth] = useState(480);
   const [expanded, setExpanded] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [error, setError] = useState("");
+  const chatboxRef = useRef<HTMLDivElement>(null);
+  const [boxWidth, setBoxWidth] = useState(480);
+  const measureRef = useRef<HTMLDivElement>(null);
+  const [boxHeight, setBoxHeight] = useState(0);
 
   const handleAsk = async () => {
-  setLoading(true);
-  setVisibleReply("");
-  setBoxHeight(0);
-  setError("");
+    setLoading(true);
+    setVisibleReply("");
+    setError("");
 
-  try {
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: input }),
-    });
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: input }),
+      });
 
-    if (!res.ok) {
-      let errorMessage = "Something went wrong.";
+      if (!res.ok) {
+        let errorMessage = "Something went wrong.";
 
-      try {
-        const errorData = await res.json();
-        errorMessage = errorData.error || errorMessage;
-      } catch {
-        errorMessage = `Request failed with status ${res.status}`;
+        try {
+          const errorData = await res.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          errorMessage = `Request failed with status ${res.status}`;
+        }
+
+        if (res.status === 429) {
+          errorMessage = "Too many requests. Please wait a moment and try again.";
+        }
+
+        setError(errorMessage);
+        setLoading(false);
+        return;
       }
 
-      if (res.status === 429) {
-        errorMessage = "Too many requests. Please wait a moment and try again.";
-      }
-
-      setError(errorMessage);
+      const data = await res.json();
+      setReply(data.reply);
       setLoading(false);
-      return;
-    }
-
-    const data = await res.json();
-    setReply(data.reply);
-    setLoading(false);
-
     } catch (err) {
       setError("Network error. Please check your connection.");
       setLoading(false);
@@ -60,32 +58,28 @@ export default function Portfolio() {
 
     // Double rAF ensures React has painted the new reply into the hidden div
   useEffect(() => {
-  if (!reply || loading || error) return;
+    if (!reply || loading || error) return;
 
-  requestAnimationFrame(() => {
+    setVisibleReply(""); // hide text immediately
+
     requestAnimationFrame(() => {
-      if (!measureRef.current || !chatboxRef.current) return;
-
-      // use ACTUAL rendered width (fixes clipping)
-      const actualWidth = chatboxRef.current.offsetWidth;
-      measureRef.current.style.width = `${actualWidth}px`;
+      if (!measureRef.current) return;
 
       const height = measureRef.current.scrollHeight;
 
-      if (boxHeight > 0) {
-        setBoxHeight(0);
+      // 1. expand container first
+      setBoxHeight(height);
 
-        setTimeout(() => {
-          setBoxHeight(height);
-          setTimeout(() => setVisibleReply(reply), 420);
-        }, 420);
-      } else {
-        setBoxHeight(height);
-        setTimeout(() => setVisibleReply(reply), 420);
-      }
+      // 2. delay text until AFTER layout starts animating
+      const t = setTimeout(() => {
+        requestAnimationFrame(() => {
+          setVisibleReply(reply);
+        });
+      }, 180); // key delay to prevent sync jump
+
+      return () => clearTimeout(t);
     });
-  });
-}, [reply, loading, error]);
+  }, [reply, loading, error]);
 
   const works = [
     {
@@ -204,111 +198,111 @@ export default function Portfolio() {
       <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none mt-20">
         
         <div
-          ref={chatboxRef}
-          className="pointer-events-auto bg-black/40 backdrop-blur-md p-6 rounded-2xl text-white mx-4 sm:mx-0"
-          style={{
-            width: expanded ? boxWidth : "fit-content",
-            minWidth: expanded ? "auto" : "auto",
-            maxWidth: "min(640px, calc(100vw - 2rem))",
-            transition: expanded ? "width 0.5s cubic-bezier(0.22, 1, 0.36, 1)" : "none",
-          }}
-        >
+        ref={chatboxRef}
+        className="pointer-events-auto bg-black/40 backdrop-blur-md p-6 rounded-2xl text-white mx-4 sm:mx-0"
+        style={{
+          width: expanded ? boxWidth : "fit-content",
+          maxWidth: "min(640px, calc(100vw - 2rem))",
+          transition: expanded
+            ? "width 0.5s cubic-bezier(0.22, 1, 0.36, 1)"
+            : "none",
+        }}
+      >
+        <h2 className="text-lg font-bold mb-3 text-center">
+          Hi, I'm an AI agent created by Josef.
+          <br />
+          Ask anything about me!
+        </h2>
 
-          <h2 className="text-lg font-bold mb-3 text-center">
-            Hi, I'm an AI agent created by Josef.
-            <br />
-            Ask anything about me!
-          </h2>
+        {/* INPUT */}
+        <div className="flex flex-col sm:flex-row items-center gap-2 mt-3">
+          <input
+            value={input}
+            onFocus={() => {
+              if (expanded) return;
 
-           <div className="flex flex-col sm:flex-row items-center gap-2 mt-3">
-              <input
-                value={input}
-                onFocus={() => {
-                  if (expanded) return;
+              setExpanded(true);
 
-                  setExpanded(true);
+              if (!chatboxRef.current) return;
 
-                  // Step 1: lock current width (prevents jump)
-                  if (chatboxRef.current) {
-                    const currentWidth = chatboxRef.current.offsetWidth;
-                    setBoxWidth(currentWidth);
+              const currentWidth = chatboxRef.current.offsetWidth;
+              setBoxWidth(currentWidth);
 
-                    // Step 2: next frame → animate to target
-                    requestAnimationFrame(() => {
-                      const targetWidth = Math.min(640, window.innerWidth - 32);
-                      setBoxWidth(targetWidth);
-                    });
-                  }
-                }}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") handleAsk(); }}
-                placeholder="Type here..."
-                className="border border-gray-400 bg-transparent text-white placeholder-gray-400 p-3 rounded-lg w-full outline-none"              
-              />
-              <button
-                onClick={handleAsk}
-                className="bg-white text-black px-4 py-3.5 text-sm rounded-lg border border-gray-500 hover:bg-gray-300 transition"
-              >
-                Ask
-              </button>
-            </div>
+              // force browser to commit initial width BEFORE animating
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  const targetWidth = Math.min(640, window.innerWidth - 32);
+                  setBoxWidth(targetWidth);
+                });
+              });
+            }}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleAsk();
+            }}
+            placeholder="Type here..."
+            className="border border-gray-400 bg-transparent text-white placeholder-gray-400 p-3 rounded-lg w-full outline-none"
+          />
 
-            {/* Measuring + animation wrapper */}
-            <div style={{ position: "relative" }}>
-
-          {/* Hidden div — invisibly holds the reply text so we can measure its height */}
-              <div
-                ref={measureRef}
-                  className="text-white whitespace-pre-wrap text-sm"
-                  style={{
-                    position: "absolute",
-                    visibility: "hidden",
-                    pointerEvents: "none",
-                    width: "100%",
-                    padding: "0.5rem 0",
-                  }}
-              >
-                {reply}
-              </div>
-
-              {/* Animated height container */}
-              <div
-                style={{
-                  height: loading ? 28 : error ? 40 : boxHeight,
-                  overflow: "hidden",
-                  transition: "height 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                  marginTop: loading || boxHeight > 0 ? "1rem" : "0",
-                }}
-              >
-              {loading && (
-                <div className="text-gray-300 animate-pulse flex justify-center">
-                  Thinking...
-                </div>
-              )}
-
-              {error ? (
-                <div className="text-red-400 text-sm text-center mt-2">
-                  {error}
-                </div>
-              ) : (
-                <div
-                  className="text-white whitespace-pre-wrap text-sm break-words"
-                  style={{
-                    opacity: visibleReply ? 1 : 0,
-                    transition: "opacity 0.3s ease",
-                    padding: "0.5rem 0",
-                  }}
-                >
-                  {visibleReply}
-                </div>
-              )}
-              </div>
-
-          </div>
-
+          <button
+            onClick={handleAsk}
+            className="bg-white text-black px-4 py-3 text-sm rounded-lg border border-gray-500 hover:bg-gray-300 transition"
+          >
+            Ask
+          </button>
         </div>
 
+        {/* RESPONSE AREA */}
+        <div
+          style={{
+            height: loading ? 30 : boxHeight,
+            overflow: "hidden",
+            transition: "height 0.45s cubic-bezier(0.22, 1, 0.36, 1)",
+            marginTop: visibleReply || loading || error ? "1rem" : "0",
+          }}
+        >
+          {loading && (
+            <div className="text-gray-300 animate-pulse text-center">
+              Thinking...
+            </div>
+          )}
+
+          {error ? (
+            <div className="text-red-400 text-sm text-center mt-2">
+              {error}
+            </div>
+          ) : (
+            <div
+              className="text-white whitespace-pre-wrap text-sm break-words"
+              style={{
+                opacity: visibleReply ? 1 : 0,
+                transform: visibleReply ? "translateY(0px)" : "translateY(4px)",
+                transition: "opacity 0.25s ease, transform 0.25s ease",
+                padding: "0.5rem 0",
+              }}
+            >
+              {visibleReply}
+            </div>
+          )}
+        </div>
+        {/* HIDDEN MEASURER */}
+        <div
+          ref={measureRef}
+          className="text-white whitespace-pre-wrap text-sm"
+          style={{
+            position: "absolute",
+            visibility: "hidden",
+            pointerEvents: "none",
+            width: "100%",
+            padding: "0.5rem 0",
+            top: 0,
+            left: 0,
+          }}
+        >
+          {reply}
+        </div>
       </div>
+  </div>
 
       
       {/* Background Image */}
