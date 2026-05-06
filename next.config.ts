@@ -1,14 +1,5 @@
 import type { NextConfig } from "next";
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    turbo: {
-      resolveAlias: {
-        "@": "."
-      }
-    }
-  }
-};
+const nextConfig: NextConfig = {};
 
 export default nextConfig;

@@ -209,14 +209,12 @@ export default function Portfolio() {
         
         <div
           ref={chatboxRef}
-          className="pointer-events-auto bg-black/40 backdrop-blur-md p-6 rounded-2xl text-white"
+          className="pointer-events-auto bg-black/40 backdrop-blur-md p-6 rounded-2xl text-white mx-4 sm:mx-0"
           style={{
             width: expanded ? boxWidth : "fit-content",
-            minWidth: expanded ? 480 : "auto",
-            maxWidth: 640,
-            transition: expanded
-              ? "width 0.5s cubic-bezier(0.22, 1, 0.36, 1)"
-              : "none",
+            minWidth: expanded ? "auto" : "auto",
+            maxWidth: "min(640px, calc(100vw - 2rem))",
+            transition: expanded ? "width 0.5s cubic-bezier(0.22, 1, 0.36, 1)" : "none",
           }}
         >
 
@@ -226,7 +224,7 @@ export default function Portfolio() {
             Ask anything about me!
           </h2>
 
-           <div className="flex items-center gap-2 mt-3 justify-center">
+           <div className="flex flex-col sm:flex-row items-center gap-2 mt-3">
               <input
                 value={input}
                 onFocus={() => {
@@ -241,7 +239,7 @@ export default function Portfolio() {
 
                     // Step 2: next frame → animate to target
                     requestAnimationFrame(() => {
-                      const targetWidth = 640;
+                      const targetWidth = Math.min(640, window.innerWidth - 32);
                       setBoxWidth(targetWidth);
                     });
                   }
@@ -249,7 +247,7 @@ export default function Portfolio() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") handleAsk(); }}
                 placeholder="Type here..."
-                className="border border-gray-400 bg-transparent text-white placeholder-gray-400 p-3 rounded-lg w-72 outline-none"
+                className="border border-gray-400 bg-transparent text-white placeholder-gray-400 p-3 rounded-lg w-full outline-none"              
               />
               <button
                 onClick={handleAsk}
