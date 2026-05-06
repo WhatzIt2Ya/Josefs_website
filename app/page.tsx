@@ -450,6 +450,17 @@ export default function Portfolio() {
       >
       <p>📧 {process.env.NEXT_PUBLIC_EMAIL}</p>
       <p>📞 {process.env.NEXT_PUBLIC_PHONE}</p>
+      <p>
+        💼{" "}
+        <a
+          href={process.env.NEXT_PUBLIC_LINKEDIN}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-400 hover:text-blue-300 underline"
+        >
+          View My LinkedIn Profile
+        </a>
+      </p>
       </div>
     </div>
     <footer className="text-center text-gray-400 text-sm py-6">
