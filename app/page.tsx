@@ -169,7 +169,7 @@ export default function Portfolio() {
           Projects
         </button>
 
-        <button onClick={() => document.getElementById("photos")?.scrollIntoView({ behavior: "smooth" })}>
+        <button onClick={() => document.getElementById("hobby")?.scrollIntoView({ behavior: "smooth" })}>
           Hobbies
         </button>
 
