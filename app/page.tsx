@@ -64,32 +64,28 @@ export default function Portfolio() {
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      if (!measureRef.current) return;
+      if (!measureRef.current || !chatboxRef.current) return;
+
+      // use ACTUAL rendered width (fixes clipping)
+      const actualWidth = chatboxRef.current.offsetWidth;
+      measureRef.current.style.width = `${actualWidth}px`;
 
       const height = measureRef.current.scrollHeight;
-      const width = measureRef.current.scrollWidth;
-      const nextWidth = Math.max(480, Math.min(width + 48, 640));
 
       if (boxHeight > 0) {
         setBoxHeight(0);
 
         setTimeout(() => {
-          if (expanded) {
-            setBoxWidth(nextWidth);
-          }
           setBoxHeight(height);
           setTimeout(() => setVisibleReply(reply), 420);
         }, 420);
       } else {
-        if (expanded) {
-          setBoxWidth(nextWidth);
-        }
         setBoxHeight(height);
         setTimeout(() => setVisibleReply(reply), 420);
       }
     });
   });
-}, [reply, loading, boxWidth]);
+}, [reply, loading, error]);
 
   const works = [
     {
@@ -268,10 +264,9 @@ export default function Portfolio() {
                     position: "absolute",
                     visibility: "hidden",
                     pointerEvents: "none",
-                    width: boxWidth,
-                    minWidth: 0,
+                    width: "100%",
                     padding: "0.5rem 0",
-                }}
+                  }}
               >
                 {reply}
               </div>
@@ -297,7 +292,7 @@ export default function Portfolio() {
                 </div>
               ) : (
                 <div
-                  className="text-white whitespace-pre-wrap text-sm"
+                  className="text-white whitespace-pre-wrap text-sm break-words"
                   style={{
                     opacity: visibleReply ? 1 : 0,
                     transition: "opacity 0.3s ease",
