@@ -68,7 +68,7 @@ export default function Portfolio() {
       const height = measureRef.current.scrollHeight;
 
       // 1. expand container first
-      setBoxHeight(height);
+      setBoxHeight(height + 4);
 
       // 2. delay text until AFTER layout starts animating
       const t = setTimeout(() => {
