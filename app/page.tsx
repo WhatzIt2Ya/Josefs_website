@@ -107,14 +107,14 @@ export default function Portfolio() {
     {
       title: "Elderly Motion Tracking System with AI-Enabled Edge Computing",
       role: "Front-end Engineer & Deployment Engineer, Aug 2023 - Dec 2024",
-      description: "Copilot Studio bot for managing employee onboarding workflows.",
+      description: "Designed and implemented a responsive web interface using FlutterFlow and Firebase for data visualisation\nIntegrated YOLOv8-based computer vision models with NVIDIA GPU hardware for efficient on device hardware accelrated data processing\nUtilised FlutterFlow's and Google's Firebase integration for highly efficient data exchange capabilities between database and web application\nLed deployment and environment setup across Windows and Linux based systems, including project configuration and deployment on NVIDIA Jetson Nano (Ubuntu 18.04), enabling edge-based inference without cloud dependency",
       image: "https://res.cloudinary.com/deykyyo9z/image/upload/v1777695495/Screenshot_2024-03-15_225247_kfrxow.png",
       link: "https://ieeexplore.ieee.org/abstract/document/10480059",
     },
     {
       title: "Physiotherapy Motion Tracking System using Machine Learning",
       role: "Software Engineer & Software Tester, Jan 2024 - Dec 2024",
-      description: "Copilot Studio bot for managing employee onboarding workflows.",
+      description: "Developed and implemented user interface components using FlutterFlow, focusing on usability and clear data presentation\nBuilt data pipelines for synchronising motion tracking data between frontend and Firebase backend\nConducted system testing and validation of motion tracking accuracy, logging and analysing results\nLed deployment across Windows and Linux environments, ensuring cross platform compatibility\nIdentified and resolved performance and data consistency issues during testing phases",
       image: "https://res.cloudinary.com/deykyyo9z/image/upload/v1777695495/Screenshot_2023-11-23_151701_hce5cy.png",
     },
     {
