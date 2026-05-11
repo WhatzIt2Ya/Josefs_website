@@ -377,6 +377,11 @@ export default function Portfolio() {
               <h3 className="text-2xl font-bold">{project.title}</h3>
               <h3 className="text-white font-semibold">{project.role}</h3>
               <p className="text-gray-300 mt-2">{project.description}</p>
+              <ul className="mt-2 text-gray-300 list-disc pl-5 space-y-1">
+              {project.description.split("\n").map((line, i) => (
+                <li key={i}>{line}</li>
+              ))}
+            </ul>
               {project.link && (
                   <a
                     href={project.link}
